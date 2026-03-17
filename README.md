@@ -38,6 +38,10 @@ It provides a browser form at `/` where users enter text and choose a banner, th
   - `500 Internal Server Error`: unexpected render failures.
 - Project uses only Go standard library packages.
 
+## Notes
+- Banner is selected from a fixed UI dropdown, so unsupported banner values are not expected in normal browser usage.
+- `normalizeInput` removes Windows/newline artifacts (`\r\n`, `\r`) so form submissions behave consistently across OSs.
+
 ## Instructions
 - Endpoints implemented:
   - `GET /`

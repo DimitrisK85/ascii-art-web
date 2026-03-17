@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+// renderTemplate loads and executes an HTML template with the provided page data.
+// It returns parsing/execution errors for caller-side handling.
 func renderTemplate(w http.ResponseWriter, name string, data pageData) error {
 	tmplPath := filepath.Join(templateDir, name)
 	if _, err := os.Stat(tmplPath); err != nil {
@@ -21,6 +23,8 @@ func renderTemplate(w http.ResponseWriter, name string, data pageData) error {
 	return tmpl.Execute(w, data)
 }
 
+// renderNotFound renders the home page with a 404 error context.
+// Used when a required resource (e.g., template/banner file) is missing.
 func renderNotFound(w http.ResponseWriter, data pageData, message string) {
 	if data.Banner == "" {
 		data.Banner = "standard"
@@ -32,6 +36,8 @@ func renderNotFound(w http.ResponseWriter, data pageData, message string) {
 	}
 }
 
+// renderBadRequest renders the home page with a 400 error context.
+// Used for invalid methods, input, or malformed form submissions.
 func renderBadRequest(w http.ResponseWriter, data pageData, message string) {
 	if data.Banner == "" {
 		data.Banner = "standard"
@@ -43,6 +49,8 @@ func renderBadRequest(w http.ResponseWriter, data pageData, message string) {
 	}
 }
 
+// handleTemplateError maps template/load failures to the required HTTP status:
+// missing files are reported as 404, all other failures as 500.
 func handleTemplateError(w http.ResponseWriter, err error) {
 	if os.IsNotExist(err) {
 		http.Error(w, "404 Not Found: template missing", http.StatusNotFound)

@@ -12,12 +12,19 @@ import (
 	"testing"
 )
 
+// These tests validate the HTTP server contract described in prd.md.
+// Keep each case small and focused (Red → Green → Clean workflow).
+
+// TestHomePage checks the GET / handler renders the required HTML form fields.
 func TestHomePage(t *testing.T) {
+	// Arrange: build a plain GET / request.
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
+	// Act: call handler directly (no network server needed).
 	homeHandler(rec, req)
 
+	// Assert: request succeeded and page contains form + required fields.
 	if rec.Code != http.StatusOK {
 		t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
 	}
@@ -34,7 +41,9 @@ func TestHomePage(t *testing.T) {
 	}
 }
 
+// TestAsciiArtPostValid verifies valid text and banner return HTTP 200 and expected ASCII output.
 func TestAsciiArtPostValid(t *testing.T) {
+	// Arrange: valid text and explicit banner.
 	form := url.Values{}
 	form.Add("text", "Hi")
 	form.Add("banner", "standard")
@@ -49,6 +58,7 @@ func TestAsciiArtPostValid(t *testing.T) {
 		t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
 	}
 
+	// Build expected ASCII output using the same converter pipeline.
 	charMap, err := banner.LoadBannerFile(filepath.Join("banners", "standard.txt"))
 	if err != nil {
 		t.Fatalf("load banner failed: %v", err)
@@ -60,7 +70,9 @@ func TestAsciiArtPostValid(t *testing.T) {
 	}
 }
 
+// TestAsciiArtPostEmptyTextReturnsBadRequest ensures empty submissions are rejected (400).
 func TestAsciiArtPostEmptyTextReturnsBadRequest(t *testing.T) {
+	// Arrange: submit empty text; this is invalid for conversion.
 	form := url.Values{}
 	form.Add("text", "")
 	form.Add("banner", "standard")
@@ -76,7 +88,9 @@ func TestAsciiArtPostEmptyTextReturnsBadRequest(t *testing.T) {
 	}
 }
 
+// TestAsciiArtPostInvalidBannerReturnsNotFound ensures missing banner files return 404.
 func TestAsciiArtPostInvalidBannerReturnsNotFound(t *testing.T) {
+	// Arrange: unknown banner value should trigger missing-banner path.
 	form := url.Values{}
 	form.Add("text", "Hello")
 	form.Add("banner", "invalid-banner")
@@ -92,7 +106,9 @@ func TestAsciiArtPostInvalidBannerReturnsNotFound(t *testing.T) {
 	}
 }
 
+// TestAsciiArtPostInvalidCharacterReturnsBadRequest validates non-printable ASCII characters are rejected.
 func TestAsciiArtPostInvalidCharacterReturnsBadRequest(t *testing.T) {
+	// Arrange: include tab, which is outside supported ASCII range.
 	form := url.Values{}
 	form.Add("text", "Hello\tWorld")
 	form.Add("banner", "standard")
@@ -112,7 +128,9 @@ func TestAsciiArtPostInvalidCharacterReturnsBadRequest(t *testing.T) {
 	}
 }
 
+// TestAsciiArtPostMissingTemplateReturnsNotFound confirms missing template produces 404 response.
 func TestAsciiArtPostMissingTemplateReturnsNotFound(t *testing.T) {
+	// Arrange: temporarily move template file away to simulate deployment misconfiguration.
 	templatePath := filepath.Join("templates", "index.html")
 	backupPath := templatePath + ".bak"
 	if err := os.Rename(templatePath, backupPath); err != nil {
@@ -138,7 +156,9 @@ func TestAsciiArtPostMissingTemplateReturnsNotFound(t *testing.T) {
 	}
 }
 
+// TestAsciiArtPostMissingBannerFileReturnsNotFound confirms missing banner file returns 404.
 func TestAsciiArtPostMissingBannerFileReturnsNotFound(t *testing.T) {
+	// Arrange: temporarily hide one banner file and post matching banner name.
 	bannerPath := filepath.Join("banners", "thinkertoy.txt")
 	backupPath := bannerPath + ".bak"
 	if err := os.Rename(bannerPath, backupPath); err != nil {

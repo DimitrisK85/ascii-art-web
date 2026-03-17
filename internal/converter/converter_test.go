@@ -3,7 +3,6 @@ package converter
 import (
 	"ascii-art-web/internal/banner"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -93,46 +92,4 @@ func TestConvertText(t *testing.T) {
 			t.Errorf("Expected 17 lines, got %d", len(result))
 		}
 	})
-}
-
-func TestConvertTextWithColor_SubstringMatch(t *testing.T) {
-	charMap, err := banner.LoadBannerFile("../../banners/standard.txt")
-	if err != nil {
-		t.Fatalf("Failed to load banner: %v", err)
-	}
-
-	result := ConvertTextWithColor(charMap, "kitten kit", "kit", "\033[31m")
-
-	if len(result) != 8 {
-		t.Fatalf("Expected 8 lines, got %d", len(result))
-	}
-
-	if result[0] == "" {
-		t.Fatal("Expected non-empty first line")
-	}
-
-	if !strings.Contains(result[0], "\033[31m") || !strings.Contains(result[0], "\033[0m") {
-		t.Fatalf("Expected ANSI color markers in output line, got: %q", result[0])
-	}
-}
-
-func TestConvertTextWithColor_WholeStringWhenSubstringEmpty(t *testing.T) {
-	charMap, err := banner.LoadBannerFile("../../banners/standard.txt")
-	if err != nil {
-		t.Fatalf("Failed to load banner: %v", err)
-	}
-
-	plain := ConvertText(charMap, "A")
-	colored := ConvertTextWithColor(charMap, "A", "", "\033[31m")
-
-	if len(colored) != 8 {
-		t.Fatalf("Expected 8 lines, got %d", len(colored))
-	}
-
-	for i := 0; i < 8; i++ {
-		expected := "\033[31m" + plain[i] + "\033[0m"
-		if colored[i] != expected {
-			t.Fatalf("Expected %q, got %q", expected, colored[i])
-		}
-	}
 }

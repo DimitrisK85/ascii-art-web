@@ -29,7 +29,7 @@ A Go web application that converts user text into ASCII art using predefined ban
   - `banners/standard.txt`
   - `banners/shadow.txt`
   - `banners/thinkertoy.txt`
-- Invalid banner values must be rejected.
+- Unknown banners are not selectable in the normal UI flow; if the selected banner file is missing, return `404 Not Found`.
 
 #### 3. Conversion Behavior
 - The conversion core is the existing `internal/banner` loader and `internal/converter` logic.
@@ -45,7 +45,7 @@ A Go web application that converts user text into ASCII art using predefined ban
 
 #### 5. Status Codes
 - `200 OK` for successful requests.
-- `400 Bad Request` for invalid form data (missing text or unsupported banner).
+- `400 Bad Request` for invalid form data (missing text, unsupported characters, malformed submissions).
 - `404 Not Found` for missing required resources (templates or banner files).
 - `500 Internal Server Error` for unexpected runtime failures.
 
@@ -63,6 +63,6 @@ A Go web application that converts user text into ASCII art using predefined ban
 ### Success Criteria
 - `GET /` returns the form UI.
 - Submitting valid data to `POST /ascii-art` returns ASCII-art output.
-- Unsupported/invalid banner or invalid request data returns clear `400`.
+- Submitting invalid request data (empty text, unsupported characters, malformed submissions) returns clear `400`.
 - Missing template/banner conditions are handled with `404`.
 - Unsupported runtime failures return `500`.

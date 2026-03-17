@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+Page flow:
+1) Rendered by GET / with pageData (Input, Banner, Result, Error).
+2) User posts text + banner to POST /ascii-art.
+3) Handler validates, converts to ASCII, then re-renders index.html with Result.
+4) If error occurs, handler sets Error and status code (400/404/500) before rendering.
+-->
 <head>
     <meta charset="UTF-8">
     <title> ASCII Art Web</title>
@@ -31,17 +38,21 @@
     </style>
 </head>
 <body>
+    <!-- Main container for the web form and output area -->
     <center>
 <div class="container">
     <h1>ASCII Art</h1>
 
+    <!-- User submits text and banner choice to POST /ascii-art -->
     <form action="/ascii-art" method="POST">
         <div>
+            <!-- Multiline input field: posted as form field "text" -->
             <label for="text">Text</label><br>
             <textarea id="text" name="text" rows="6" required>{{.Input}}</textarea>
         </div>
 
         <div>
+            <!-- Banner selector: server receives the selected value in form field "banner" -->
             <label for="banner">Banner</label><br>
             <select id="banner" name="banner">
                 <option value="standard" {{if eq .Banner "standard"}}selected{{end}}>standard</option>
@@ -51,14 +62,17 @@
         </div>
 
         <div>
+            <!-- Submit button starts POST flow -->
             <button type="submit">Convert</button>
         </div>
     </form>
 
+    <!-- Error text is rendered here when HTTP handler sets data.Error -->
     {{if .Error}}
         <div class="error">{{.Error}}</div>
     {{end}}
 
+    <!-- Rendered ASCII art appears here inside <pre> to preserve formatting -->
     {{if .Result}}
         <pre class="result">{{.Result}}</pre>
     {{end}}

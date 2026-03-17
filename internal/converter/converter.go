@@ -26,7 +26,7 @@ func ConvertLine(charMap map[rune][]string, text string) []string {
 	return output
 }
 
-// ConvertText converts text with real newline characters to ASCII art.
+// ConvertText converts multi-line input into a single ASCII-art slice.
 // Splits input by \n and converts each line separately.
 func ConvertText(char map[rune][]string, input string) []string {
 	// Split input by real newlines only.
@@ -40,70 +40,4 @@ func ConvertText(char map[rune][]string, input string) []string {
 	}
 
 	return result
-}
-
-// ConvertTextWithColor converts text to ASCII art and colors matched characters.
-// If substring is empty, all input characters are colored.
-func ConvertTextWithColor(charMap map[rune][]string, input, substring, colorCode string) []string {
-	lines := strings.Split(input, "\n")
-	var result []string
-
-	for _, line := range lines {
-		converted := convertLineWithColor(charMap, line, substring, colorCode)
-		result = append(result, converted...)
-	}
-
-	return result
-}
-
-// convertLineWithColor appends each glyph row and wraps matched characters with ANSI color/reset.
-func convertLineWithColor(charMap map[rune][]string, text, substring, colorCode string) []string {
-	output := make([]string, 8)
-	if text == "" {
-		return []string{""}
-	}
-
-	colorMask := buildColorMask(text, substring)
-	resetCode := "\033[0m"
-
-	for i, char := range text {
-		artLines := charMap[char]
-		shouldColor := i < len(colorMask) && colorMask[i]
-		for row := 0; row < 8; row++ {
-			if shouldColor {
-				output[row] += colorCode + artLines[row] + resetCode
-			} else {
-				output[row] += artLines[row]
-			}
-		}
-	}
-
-	return output
-}
-
-// buildColorMask marks character indices that belong to substring matches in text.
-func buildColorMask(text, substring string) []bool {
-	mask := make([]bool, len(text))
-	if substring == "" {
-		for i := range mask {
-			mask[i] = true
-		}
-		return mask
-	}
-
-	offset := 0
-	for {
-		idx := strings.Index(text[offset:], substring)
-		if idx == -1 {
-			break
-		}
-		start := offset + idx
-		end := start + len(substring)
-		for i := start; i < end && i < len(mask); i++ {
-			mask[i] = true
-		}
-		offset = end
-	}
-
-	return mask
 }
