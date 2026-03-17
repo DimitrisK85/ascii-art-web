@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> ASCII Art Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background: #f5f7fa;
+            color: #222;
+        }
+        .container {
+            max-width: 900px;
+        }
+        textarea {
+            width: 100%;
+            font-family: monospace;
+        }
+        .result {
+            margin-top: 1.5rem;
+            background: #111;
+            color: #f8f8f8;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .error {
+            color: #b00020;
+        }
+    </style>
+</head>
+<body>
+    <center>
+<div class="container">
+    <h1>ASCII Art</h1>
+
+    <form action="/ascii-art" method="POST">
+        <div>
+            <label for="text">Text</label><br>
+            <textarea id="text" name="text" rows="6" required>{{.Input}}</textarea>
+        </div>
+
+        <div>
+            <label for="banner">Banner</label><br>
+            <select id="banner" name="banner">
+                <option value="standard" {{if eq .Banner "standard"}}selected{{end}}>standard</option>
+                <option value="shadow" {{if eq .Banner "shadow"}}selected{{end}}>shadow</option>
+                <option value="thinkertoy" {{if eq .Banner "thinkertoy"}}selected{{end}}>thinkertoy</option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">Convert</button>
+        </div>
+    </form>
+
+    {{if .Error}}
+        <div class="error">{{.Error}}</div>
+    {{end}}
+
+    {{if .Result}}
+        <pre class="result">{{.Result}}</pre>
+    {{end}}
+</div>
+</center>
+</body>
+</html>

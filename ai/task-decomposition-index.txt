@@ -1,0 +1,76 @@
+# AI usage log
+- Date: 2026-03-13
+  Tool/Model: Codex (GPT-5)
+  Ask: User requested PRD rewrite for web-only scope in ascii-art-web.
+  Copied vs Edited: Edited `prd.md`; created/updated `ai/task-decomposition-index.txt` (audit entry only).
+  Task Card: TASK-PRD-WEB-01
+- Date: 2026-03-13
+  Tool/Model: Codex (GPT-5)
+  Ask: User requested task decomposition for web-only scope implementation.
+  Copied vs Edited: Edited `tasks.md`; appended task cards.
+  Task Card: TASK-01, TASK-02, TASK-03, TASK-04
+- Date: 2026-03-13
+  Tool/Model: Codex (GPT-5)
+  Ask: User confirmed pure web mode.
+  Copied vs Edited: Edited `main.go`; created `templates/index.html`.
+  Task Card: TASK-02, TASK-03
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: User asked to proceed with web tests; implement endpoint tests aligned to pure web flow.
+  Copied vs Edited: Replaced `main_test.go` with handler-focused HTTP tests; appended one audit entry.
+  Task Card: TASK-06
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: User requested readability cleanup in template rendering path.
+  Copied vs Edited: Edited `main.go` (renamed shadowed local variable `template` -> `tmpl` in `renderTemplate`).
+  Task Card: TASK-06
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: User reported web testing failure; debug likely multiline form input issues.
+  Copied vs Edited: Edited `main.go` to normalize CRLF/CR input in `asciiArtHandler`.
+  Task Card: TASK-04
+- Date: 2026-03-16
+- Tool/Model: Codex (GPT-5)
+- Ask: User wanted web text newlines only from Enter, not literal backslash+n from input.
+- Copied vs Edited: Edited `internal/converter/converter.go` to stop converting literal `\\n` to newline; updated `internal/converter/converter_test.go` newline fixtures.
+- Task Card: TASK-04
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: Improve UX for invalid requests by rendering inline status + cause while preserving 400/404/500 behavior.
+  Copied vs Edited: Edited `main.go` to introduce `renderBadRequest` and `normalizeInput`; replaced plain http 400 responses in handlers with page-rendered inline error messages.
+  Task Card: TASK-05, TASK-06
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: User requested consistent UX for 404 errors (show inline page message instead of http.Error text page).
+  Copied vs Edited: Edited `main.go` to add `renderNotFound`, use inline rendering for missing banner with 404, and clarify handleTemplateError messages.
+  Task Card: TASK-05
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: Extend 404 test coverage to match inline-not-found page rendering behavior.
+  Copied vs Edited: Edited `main_test.go` for missing template and missing banner tests to assert inline 404 message content.
+  Task Card: TASK-06
+- Date: 2026-03-16
+  Tool/Model: Codex (GPT-5)
+  Ask: User requested explicit status code in displayed internal error text.
+  Copied vs Edited: Edited `main.go` to include `500 Internal Server Error` message in handleTemplateError.
+  Task Card: TASK-05
+- Date: 2026-03-17
+  Tool/Model: Codex (GPT-5)
+  Ask: User asked to simplify template error handling to rely on `os.IsNotExist` only and asked to keep the task log updated.
+  Copied vs Edited: Reviewed `main.go`; removed redundant `errors.As` path-error block and preserved `os.IsNotExist` check; verified tests/template usage remains aligned.
+  Task Card: TASK-05
+- Date: 2026-03-17
+  Tool/Model: Codex (GPT-5)
+  Ask: User noted banner validation wording should align with UI-limited banner options.
+  Copied vs Edited: Edited `main.go` to change 400 reason text from “unsupported banner” to “invalid banner selected,” retaining validation.
+  Task Card: TASK-04
+- Date: 2026-03-17
+  Tool/Model: Codex (GPT-5)
+  Ask: User requested dropping explicit banner validation step because banner is UI-selected.
+  Copied vs Edited: Removed `isValidBanner` check/400 path from `asciiArtHandler`, changed invalid-banner test to expect 404 from missing banner file path.
+  Task Card: TASK-05
+- Date: 2026-03-17
+  Tool/Model: Codex (GPT-5)
+  Ask: User asked to proceed with project completion and document README.
+  Copied vs Edited: Updated `README.md` with required sections (Description, Authors, Usage, Implementation details, Instructions) aligned to web-only scope; updated endpoint/error behavior notes.
+  Task Card: TASK-07
